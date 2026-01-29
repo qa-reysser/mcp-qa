@@ -1,8 +1,8 @@
 """
 Casos de uso para exportación - Orquesta la exportación de resultados
 """
-from src.domain.models import AnalysisResult
-from src.domain.exporters import IResultExporter, IDocumentationGenerator
+from ..domain.models import AnalysisResult
+from ..domain.exporters import IResultExporter, IDocumentationGenerator
 
 
 class ExportToJsonUseCase:

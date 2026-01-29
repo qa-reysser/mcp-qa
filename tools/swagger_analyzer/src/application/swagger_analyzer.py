@@ -3,8 +3,8 @@ Servicio de análisis de contratos Swagger/OpenAPI
 Implementa la lógica de negocio para analizar contratos
 """
 from typing import Dict, Any, List, Optional
-from src.domain.interfaces import IContractAnalyzer
-from src.domain.models import (
+from ..domain.interfaces import IContractAnalyzer
+from ..domain.models import (
     AnalysisResult, SwaggerContract, Endpoint, Server, Schema, 
     RequestBody, Response, Parameter, Header, Property, HttpMethod
 )

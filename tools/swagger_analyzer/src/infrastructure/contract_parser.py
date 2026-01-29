@@ -5,7 +5,7 @@ Responsable de parsear contenido YAML/JSON
 import json
 import yaml
 from typing import Dict, Any
-from src.domain.interfaces import IContractParser
+from ..domain.interfaces import IContractParser
 
 
 class YamlJsonContractParser(IContractParser):

@@ -1,70 +1,119 @@
 """
-Servicio de aplicación - Orquesta el flujo completo de análisis
-Coordina el fetcher, parser y analyzer siguiendo el patrón de caso de uso
+Caso de uso principal - Análisis completo de contrato Swagger
+Orquesta todos los pasos: análisis, exportación JSON y generación de README
 """
-from typing import Dict, Any
-from src.domain.interfaces import IContractFetcher, IContractParser, IContractAnalyzer
-from src.domain.models import AnalysisResult
+from pathlib import Path
+from dataclasses import dataclass
+from typing import Optional
+from ..domain.interfaces import IContractFetcher, IContractParser, IContractAnalyzer
+from ..domain.exporters import IResultExporter, IDocumentationGenerator
+from ..domain.models import AnalysisResult
 
 
-class AnalyzeContractUseCase:
-    """Caso de uso para analizar un contrato Swagger/OpenAPI desde una URL"""
+@dataclass
+class AnalysisOutput:
+    """Resultado del análisis completo con rutas de archivos generados"""
+    analysis_result: AnalysisResult
+    formatted_text: str
+    json_file_path: Optional[str] = None
+    readme_file_path: Optional[str] = None
+
+
+class AnalyzeContractCompleteUseCase:
+    """
+    Caso de uso que ejecuta el análisis completo y genera todas las salidas.
+    Respeta SRP: orquesta pero delega responsabilidades específicas a otros componentes.
+    """
     
     def __init__(
         self,
         fetcher: IContractFetcher,
         parser: IContractParser,
-        analyzer: IContractAnalyzer
+        analyzer: IContractAnalyzer,
+        json_exporter: IResultExporter,
+        readme_generator: IDocumentationGenerator,
+        output_dir: str = "output/swagger_analyzer"
     ):
         """
-        Inicializa el caso de uso con sus dependencias
+        Inicializa el caso de uso con todas sus dependencias.
         
         Args:
             fetcher: Servicio para obtener contratos desde URLs
             parser: Servicio para parsear YAML/JSON
             analyzer: Servicio para analizar contratos
+            json_exporter: Servicio para exportar a JSON
+            readme_generator: Servicio para generar documentación
+            output_dir: Directorio base para las salidas
         """
         self._fetcher = fetcher
         self._parser = parser
         self._analyzer = analyzer
+        self._json_exporter = json_exporter
+        self._readme_generator = readme_generator
+        self._output_dir = Path(output_dir)
     
-    def execute(self, url: str) -> AnalysisResult:
+    def execute(
+        self,
+        url: str,
+        swagger_ui_url: Optional[str] = None,
+        generate_json: bool = True,
+        generate_readme: bool = True
+    ) -> AnalysisOutput:
         """
-        Ejecuta el análisis completo de un contrato
+        Ejecuta el análisis completo del contrato.
         
         Args:
             url: URL del contrato Swagger/OpenAPI
+            swagger_ui_url: URL opcional de Swagger UI para incluir en README
+            generate_json: Si se debe generar el archivo JSON
+            generate_readme: Si se debe generar el archivo README
             
         Returns:
-            Resultado del análisis con toda la información extraída
+            AnalysisOutput con el resultado y rutas de archivos generados
             
         Raises:
             Exception: Si hay algún error en cualquier paso del proceso
         """
-        # Paso 1: Obtener el contrato desde la URL
+        # Paso 1: Obtener y parsear el contrato
         content = self._fetcher.fetch(url)
-        
-        # Paso 2: Parsear el contenido
         contract_dict = self._parser.parse(content)
         
-        # Paso 3: Analizar el contrato
+        # Paso 2: Analizar el contrato
         result = self._analyzer.analyze(contract_dict)
         
-        return result
-
-
-class FormatAnalysisResultUseCase:
-    """Caso de uso para formatear el resultado del análisis en un formato legible"""
-    
-    def execute(self, result: AnalysisResult) -> str:
-        """
-        Formatea el resultado del análisis en texto estructurado
+        # Paso 3: Formatear resultado como texto
+        formatted_text = self._format_analysis_result(result)
         
-        Args:
-            result: Resultado del análisis a formatear
-            
-        Returns:
-            String con el análisis formateado
+        # Asegurar que el directorio de salida existe
+        self._output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Paso 4: Generar JSON si se solicita
+        json_path = None
+        if generate_json:
+            json_filename = self._output_dir / "swagger-analysis.json"
+            json_path = self._json_exporter.export(result, str(json_filename))
+        
+        # Paso 5: Generar README si se solicita
+        readme_path = None
+        if generate_readme:
+            readme_filename = self._output_dir / "API-README.md"
+            readme_path = self._readme_generator.generate(
+                result,
+                str(readme_filename),
+                swagger_ui_url
+            )
+        
+        return AnalysisOutput(
+            analysis_result=result,
+            formatted_text=formatted_text,
+            json_file_path=json_path,
+            readme_file_path=readme_path
+        )
+    
+    def _format_analysis_result(self, result: AnalysisResult) -> str:
+        """
+        Formatea el resultado del análisis en texto legible.
+        Extrae lógica duplicada en un solo lugar.
         """
         lines = []
         
@@ -156,7 +205,7 @@ class FormatAnalysisResultUseCase:
                         lines.append(f"        Content-Types: {', '.join(endpoint.request_body.content_types)}")
                     if endpoint.request_body.schema:
                         lines.append("        Schema:")
-                        self._format_schema(lines, endpoint.request_body.schema, indent="          ")
+                        self._format_schema_inline(lines, endpoint.request_body.schema, indent="          ")
                 
                 # Responses
                 if endpoint.responses:
@@ -171,7 +220,7 @@ class FormatAnalysisResultUseCase:
                                 lines.append(f"            - {header.name}: {header.type or 'string'}")
                         if response.schema:
                             lines.append("          Schema:")
-                            self._format_schema(lines, response.schema, indent="            ")
+                            self._format_schema_inline(lines, response.schema, indent="            ")
                 
                 lines.append("")
         
@@ -261,7 +310,7 @@ class FormatAnalysisResultUseCase:
         
         return "\n".join(lines)
     
-    def _format_schema(self, lines: list, schema, indent: str = ""):
+    def _format_schema_inline(self, lines: list, schema, indent: str = ""):
         """Helper para formatear schemas de forma recursiva"""
         if schema.properties:
             for prop in schema.properties[:5]:  # Limitar a 5 propiedades para brevedad

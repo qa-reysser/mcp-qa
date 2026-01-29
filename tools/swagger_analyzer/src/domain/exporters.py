@@ -2,7 +2,7 @@
 Interfaces para exportadores - Abstracciones para generar archivos de salida
 """
 from abc import ABC, abstractmethod
-from src.domain.models import AnalysisResult
+from .models import AnalysisResult
 
 
 class IResultExporter(ABC):

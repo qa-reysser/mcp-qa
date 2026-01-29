@@ -4,8 +4,8 @@ Exportador JSON - Exporta el resultado del análisis a formato JSON
 import json
 from pathlib import Path
 from typing import Any, Dict, List
-from src.domain.exporters import IResultExporter
-from src.domain.models import AnalysisResult, Endpoint, Schema, Response, Parameter, Property
+from ..domain.exporters import IResultExporter
+from ..domain.models import AnalysisResult, Endpoint, Schema, Response, Parameter, Property
 
 
 class JsonResultExporter(IResultExporter):

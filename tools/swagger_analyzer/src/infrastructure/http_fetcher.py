@@ -4,7 +4,7 @@ Responsable de obtener contratos desde URLs
 """
 import requests
 from typing import Optional
-from src.domain.interfaces import IContractFetcher
+from ..domain.interfaces import IContractFetcher
 
 
 class HttpContractFetcher(IContractFetcher):

@@ -4,7 +4,7 @@ Estas interfaces definen los contratos sin depender de implementaciones concreta
 """
 from abc import ABC, abstractmethod
 from typing import Dict, Any
-from src.domain.models import SwaggerContract, AnalysisResult
+from .models import SwaggerContract, AnalysisResult
 
 
 class IContractFetcher(ABC):

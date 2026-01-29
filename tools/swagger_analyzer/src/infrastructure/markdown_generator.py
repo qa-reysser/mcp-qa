@@ -2,8 +2,8 @@
 Generador de documentación Markdown - Genera README con estilo Swagger UI
 """
 from pathlib import Path
-from src.domain.exporters import IDocumentationGenerator
-from src.domain.models import AnalysisResult, Endpoint, Schema
+from ..domain.exporters import IDocumentationGenerator
+from ..domain.models import AnalysisResult, Endpoint, Schema
 
 
 class MarkdownDocumentationGenerator(IDocumentationGenerator):

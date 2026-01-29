@@ -18,30 +18,52 @@ MCP Server para análisis completo de contratos Swagger/OpenAPI con exportación
 
 ## 🏗️ Arquitectura
 
-El proyecto sigue **arquitectura limpia** y **principios SOLID**:
+El proyecto sigue **arquitectura limpia** y **principios SOLID** con estructura modular donde cada herramienta es completamente autónoma:
 
 ```
 mcp-qa/
-├── src/
-│   ├── domain/           # Capa de dominio (entidades e interfaces)
-│   │   ├── models.py     # Modelos de dominio
-│   │   └── interfaces.py # Abstracciones (IContractFetcher, IContractParser, IContractAnalyzer)
-│   ├── application/      # Capa de aplicación (casos de uso)
-│   │   ├── swagger_analyzer.py  # Analizador de contratos
-│   │   └── use_cases.py         # Orquestación del flujo
-│   └── infrastructure/   # Capa de infraestructura (implementaciones)
-│       ├── http_fetcher.py      # Obtención de contratos HTTP
-│       └── contract_parser.py   # Parser YAML/JSON
-└── main.py              # Punto de entrada MCP
+├── tools/                           # Herramientas de QA (una por subdirectorio)
+│   └── swagger_analyzer/            # Analizador de contratos Swagger/OpenAPI
+│       ├── src/                     # Código fuente de la herramienta
+│       │   ├── domain/              # Capa de dominio
+│       │   │   ├── models.py        # Entidades del dominio
+│       │   │   ├── interfaces.py    # Abstracciones (Fetcher, Parser, Analyzer)
+│       │   │   └── exporters.py     # Interfaces de exportación
+│       │   ├── application/         # Capa de aplicación (casos de uso)
+│       │   │   ├── swagger_analyzer.py            # Analizador de contratos
+│       │   │   ├── complete_analysis_use_case.py  # Orquestador principal
+│       │   │   └── export_use_cases.py            # Casos de uso de exportación
+│       │   └── infrastructure/      # Capa de infraestructura
+│       │       ├── http_fetcher.py           # Obtención HTTP
+│       │       ├── contract_parser.py        # Parser YAML/JSON
+│       │       ├── json_exporter.py          # Exportador JSON
+│       │       └── markdown_generator.py     # Generador de Markdown
+│       ├── __init__.py
+│       ├── config.py                # Configuración de la herramienta
+│       └── tool.py                  # Facade de la herramienta
+├── output/                          # Salidas generadas (por herramienta)
+│   └── swagger_analyzer/            # Salidas del analizador Swagger
+│       ├── swagger-analysis.json
+│       └── API-README.md
+└── main.py                          # Punto de entrada MCP
 ```
 
 ### Principios SOLID aplicados:
 
-- **S (Single Responsibility)**: Cada clase tiene una única responsabilidad
-- **O (Open/Closed)**: Extensible sin modificar código existente
-- **L (Liskov Substitution)**: Las implementaciones son intercambiables
+- **S (Single Responsibility)**: Cada clase tiene una única responsabilidad bien definida
+- **O (Open/Closed)**: Fácil agregar nuevas herramientas sin modificar las existentes
+- **L (Liskov Substitution)**: Las implementaciones son intercambiables vía interfaces
 - **I (Interface Segregation)**: Interfaces específicas y focalizadas
-- **D (Dependency Inversion)**: Dependencias de abstracciones, no de concreciones
+- **D (Dependency Inversion)**: Dependencias de abstracciones mediante inyección
+
+### Estructura modular y escalable:
+
+- **Cada herramienta es autónoma**: Tiene su propio `src/` con arquitectura limpia completa
+- **Alta cohesión, bajo acoplamiento**: No hay dependencias entre herramientas
+- **Estructura homóloga**: Todas las herramientas siguen el mismo patrón arquitectónico
+- **Salidas organizadas**: Por herramienta en `output/`
+- **Fácil de mantener**: Cambios en una herramienta NO afectan a otras
+- **Fácil de escalar**: Agregar nuevas herramientas es simplemente duplicar la estructura
 
 ## 📦 Instalación
 
@@ -50,47 +72,39 @@ mcp-qa/
 pip install -e .
 ```
 
-## 🚀 Uso
+## 🚀 Uso principal:
 
-```bash
-# Ejecutar el servidor MCP
-python main.py
-```
-
-### Herramientas disponibles:
-
-#### 1. Analizar contrato (salida de texto)
+#### Análisis completo de contrato Swagger (una herramienta, todo incluido)
 
 ```python
-# Analizar el contrato de Petstore
-analizar_contrato_swagger("https://petstore.swagger.io/v2/swagger.json")
-```
+# Análisis completo: texto + JSON + README
+analizar_contrato_swagger("http://localhost:8080/v3/api-docs")
 
-#### 2. Exportar análisis a JSON
-
-```python
-# Generar archivo JSON con toda la información
-generar_json_analisis("http://localhost:8080/v3/api-docs", "mi-api-analysis.json")
-```
-
-Esto genera un archivo JSON estructurado con:
-- Metadata del análisis (totales, resúmenes)
-- Información completa del contrato
-- Todos los endpoints con detalles
-- Schemas completos
-- Esquemas de seguridad
-
-#### 3. Generar README con documentación
-
-```python
-# Generar README estilo Swagger UI
-generar_readme_api(
+# Con URL de Swagger UI para incluir en README
+analizar_contrato_swagger(
     "http://localhost:8080/v3/api-docs",
-    "API-DOCS.md",
-    "http://localhost:8080/swagger-ui/index.html"
+    swagger_ui_url="http://localhost:8080/swagger-ui/index.html"
+)
+
+# Solo texto, sin generar archivos
+analizar_contrato_swagger(
+    "https://petstore.swagger.io/v2/swagger.json",
+    generar_json=False,
+    generar_readme=False
+)
+
+# Solo JSON
+analizar_contrato_swagger(
+    "http://localhost:8080/v3/api-docs",
+    generar_readme=False
 )
 ```
 
+### Salidas generadas:
+
+Todos los archivos se guardan automáticamente en `output/swagger_analyzer/`:
+- **swagger-analysis.json**: Análisis completo en JSON estructurado
+- **API-README.md**: Documentación estilo Swagger UI
 Esto genera un README.md profesional con:
 - Tabla de contenidos
 - Resumen y estadísticas
