@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"swagger-mcp": {
+			"type": "stdio",
+			"command": "python",
+			"args": [
+				"main.py"
+			],
+			"cwd": "c:\\Users\\reyss\\Documents\\Reysser\\space-projects\\mcp-qa"
+		}
+	},
+	"inputs": []
+}
