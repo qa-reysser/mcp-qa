@@ -1,6 +1,6 @@
 # MCP-QA: Analizador de Contratos Swagger/OpenAPI
 
-MCP Server para análisis completo de contratos Swagger/OpenAPI.
+MCP Server para análisis completo de contratos Swagger/OpenAPI con exportación a JSON y generación automática de documentación.
 
 ## 🎯 Características
 
@@ -13,6 +13,8 @@ MCP Server para análisis completo de contratos Swagger/OpenAPI.
 - ✅ Validaciones (obligatoriedad, tipos, formatos UUID/fecha/etc)
 - ✅ Información de servidores y seguridad
 - ✅ Tags y documentación
+- ✅ **Exportación a JSON** con toda la información estructurada
+- ✅ **Generación de README** con documentación estilo Swagger UI
 
 ## 🏗️ Arquitectura
 
@@ -55,12 +57,47 @@ pip install -e .
 python main.py
 ```
 
-### Ejemplo de análisis:
+### Herramientas disponibles:
+
+#### 1. Analizar contrato (salida de texto)
 
 ```python
 # Analizar el contrato de Petstore
 analizar_contrato_swagger("https://petstore.swagger.io/v2/swagger.json")
 ```
+
+#### 2. Exportar análisis a JSON
+
+```python
+# Generar archivo JSON con toda la información
+generar_json_analisis("http://localhost:8080/v3/api-docs", "mi-api-analysis.json")
+```
+
+Esto genera un archivo JSON estructurado con:
+- Metadata del análisis (totales, resúmenes)
+- Información completa del contrato
+- Todos los endpoints con detalles
+- Schemas completos
+- Esquemas de seguridad
+
+#### 3. Generar README con documentación
+
+```python
+# Generar README estilo Swagger UI
+generar_readme_api(
+    "http://localhost:8080/v3/api-docs",
+    "API-DOCS.md",
+    "http://localhost:8080/swagger-ui/index.html"
+)
+```
+
+Esto genera un README.md profesional con:
+- Tabla de contenidos
+- Resumen y estadísticas
+- Links a Swagger UI
+- Documentación completa de endpoints
+- Tablas de schemas y propiedades
+- Códigos de estado HTTP
 
 ## 🔍 Información extraída
 

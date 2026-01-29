@@ -1,0 +1,786 @@
+{
+  "analysis_metadata": {
+    "total_endpoints": 5,
+    "total_schemas": 2,
+    "has_security": false,
+    "methods_summary": {
+      "GET": 2,
+      "PUT": 1,
+      "DELETE": 1,
+      "POST": 1
+    },
+    "status_codes_summary": {
+      "400": 5,
+      "404": 3,
+      "200": 3,
+      "409": 2,
+      "204": 1,
+      "201": 1
+    },
+    "content_types": [
+      "*/*",
+      "application/json"
+    ],
+    "warnings": [],
+    "errors": []
+  },
+  "contract_info": {
+    "title": "Gestión de Prioridades API",
+    "version": "1.0.0",
+    "openapi_version": "3.0.1",
+    "swagger_version": null,
+    "description": "API RESTful para la gestión completa de prioridades mediante operaciones CRUD. Incluye validación de encabezados personalizados, manejo estructurado de errores y enlaces HATEOAS.",
+    "tags": [
+      {
+        "name": "Prioridades",
+        "description": "Operaciones CRUD para la gestión de prioridades"
+      }
+    ],
+    "external_docs": null
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url",
+      "variables": {}
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/priorities/{id}",
+      "method": "GET",
+      "operation_id": "findById",
+      "summary": "Obtener prioridad por ID",
+      "description": "Recupera una prioridad específica mediante su identificador. Requiere encabezados de validación y que el ID exista en la base de datos.",
+      "tags": [
+        "Prioridades"
+      ],
+      "deprecated": false,
+      "parameters": [
+        {
+          "name": "id",
+          "location": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "ID de la prioridad",
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "example": 1
+        },
+        {
+          "name": "x-correlation-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único para correlación entre servicios. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "example": null
+        },
+        {
+          "name": "x-request-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la solicitud. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+          },
+          "example": null
+        },
+        {
+          "name": "x-transaction-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la transacción de negocio. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          },
+          "example": null
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": "400",
+          "description": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response400",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "404",
+          "description": "Prioridad no encontrada - El ID especificado no existe en la base de datos\n**Códigos de Error Posibles:**\n\n**TYP-002** - resource_not_found (HTTP 404)\n  - `RNF-001`: Recurso no encontrado por ID especificado\n  - `RNF-002`: Recurso no encontrado después de una operación\n  - `RNF-003`: Endpoint o ruta no existe en la API\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response404",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "200",
+          "description": "Prioridad encontrada exitosamente",
+          "content_types": [
+            "*/*"
+          ],
+          "schema": {
+            "name": "Response200",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        }
+      ],
+      "security": []
+    },
+    {
+      "path": "/priorities/{id}",
+      "method": "PUT",
+      "operation_id": "update",
+      "summary": "Actualizar prioridad",
+      "description": "Actualiza una prioridad existente. El ID debe existir y el nombre debe permanecer único.",
+      "tags": [
+        "Prioridades"
+      ],
+      "deprecated": false,
+      "parameters": [
+        {
+          "name": "id",
+          "location": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "ID de la prioridad",
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "example": 1
+        },
+        {
+          "name": "x-correlation-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único para correlación entre servicios. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "example": null
+        },
+        {
+          "name": "x-request-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la solicitud. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+          },
+          "example": null
+        },
+        {
+          "name": "x-transaction-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la transacción de negocio. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          },
+          "example": null
+        }
+      ],
+      "request_body": {
+        "required": true,
+        "description": "Datos actualizados de la prioridad",
+        "content_types": [
+          "application/json"
+        ],
+        "schema": {
+          "name": "RequestBody",
+          "type": null,
+          "description": null,
+          "required": [],
+          "properties": [],
+          "example": null,
+          "all_of": null,
+          "one_of": null,
+          "any_of": null
+        },
+        "example": null
+      },
+      "responses": [
+        {
+          "status_code": "409",
+          "description": "Conflicto - Nombre duplicado. Ya existe una prioridad con ese nombre\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response409",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "200",
+          "description": "Prioridad actualizada exitosamente",
+          "content_types": [
+            "*/*"
+          ],
+          "schema": {
+            "name": "Response200",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "404",
+          "description": "Prioridad no encontrada - El ID especificado no existe en la base de datos\n**Códigos de Error Posibles:**\n\n**TYP-002** - resource_not_found (HTTP 404)\n  - `RNF-001`: Recurso no encontrado por ID especificado\n  - `RNF-002`: Recurso no encontrado después de una operación\n  - `RNF-003`: Endpoint o ruta no existe en la API\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response404",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "400",
+          "description": "Encabezados faltantes o datos de validación incorrectos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response400",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        }
+      ],
+      "security": []
+    },
+    {
+      "path": "/priorities/{id}",
+      "method": "DELETE",
+      "operation_id": "delete",
+      "summary": "Eliminar prioridad",
+      "description": "Elimina una prioridad por su ID. Requiere que el ID exista en la base de datos.",
+      "tags": [
+        "Prioridades"
+      ],
+      "deprecated": false,
+      "parameters": [
+        {
+          "name": "id",
+          "location": "path",
+          "required": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "ID de la prioridad",
+          "schema": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "example": 1
+        },
+        {
+          "name": "x-correlation-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único para correlación entre servicios. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "example": null
+        },
+        {
+          "name": "x-request-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la solicitud. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+          },
+          "example": null
+        },
+        {
+          "name": "x-transaction-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la transacción de negocio. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          },
+          "example": null
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": "400",
+          "description": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response400",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "204",
+          "description": "Prioridad eliminada exitosamente",
+          "content_types": [],
+          "schema": null,
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "404",
+          "description": "Prioridad no encontrada - El ID especificado no existe en la base de datos\n**Códigos de Error Posibles:**\n\n**TYP-002** - resource_not_found (HTTP 404)\n  - `RNF-001`: Recurso no encontrado por ID especificado\n  - `RNF-002`: Recurso no encontrado después de una operación\n  - `RNF-003`: Endpoint o ruta no existe en la API\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response404",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        }
+      ],
+      "security": []
+    },
+    {
+      "path": "/priorities",
+      "method": "GET",
+      "operation_id": "findAll",
+      "summary": "Listar todas las prioridades",
+      "description": "Obtiene la lista completa de prioridades disponibles. Requiere encabezados de validación (x-correlation-id, x-client-id, x-user-id).",
+      "tags": [
+        "Prioridades"
+      ],
+      "deprecated": false,
+      "parameters": [
+        {
+          "name": "x-correlation-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único para correlación entre servicios. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "example": null
+        },
+        {
+          "name": "x-request-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la solicitud. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+          },
+          "example": null
+        },
+        {
+          "name": "x-transaction-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la transacción de negocio. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          },
+          "example": null
+        }
+      ],
+      "request_body": null,
+      "responses": [
+        {
+          "status_code": "400",
+          "description": "Encabezados requeridos faltantes o inválidos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response400",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "200",
+          "description": "Lista obtenida exitosamente",
+          "content_types": [
+            "*/*"
+          ],
+          "schema": {
+            "name": "Response200",
+            "type": "array",
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        }
+      ],
+      "security": []
+    },
+    {
+      "path": "/priorities",
+      "method": "POST",
+      "operation_id": "save",
+      "summary": "Crear nueva prioridad",
+      "description": "Crea una nueva prioridad. El nombre debe ser único y cumplir validaciones (3-70 caracteres).",
+      "tags": [
+        "Prioridades"
+      ],
+      "deprecated": false,
+      "parameters": [
+        {
+          "name": "x-correlation-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único para correlación entre servicios. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "example": null
+        },
+        {
+          "name": "x-request-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la solicitud. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+          },
+          "example": null
+        },
+        {
+          "name": "x-transaction-id",
+          "location": "header",
+          "required": true,
+          "type": "string",
+          "format": "uuid",
+          "description": "Identificador único de la transacción de negocio. UUID v4 válido con 36 caracteres.",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+          },
+          "example": null
+        }
+      ],
+      "request_body": {
+        "required": true,
+        "description": "Datos de la prioridad a crear (sin ID)",
+        "content_types": [
+          "application/json"
+        ],
+        "schema": {
+          "name": "RequestBody",
+          "type": null,
+          "description": null,
+          "required": [],
+          "properties": [],
+          "example": null,
+          "all_of": null,
+          "one_of": null,
+          "any_of": null
+        },
+        "example": null
+      },
+      "responses": [
+        {
+          "status_code": "201",
+          "description": "Prioridad creada exitosamente. Header Location contiene la URI del nuevo recurso.",
+          "content_types": [],
+          "schema": null,
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "409",
+          "description": "Conflicto - Nombre duplicado. Ya existe una prioridad con ese nombre\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response409",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        },
+        {
+          "status_code": "400",
+          "description": "Encabezados faltantes o datos de validación incorrectos\n**Códigos de Error Posibles:**\n\n**TYP-001** - header_error (HTTP 400)\n  - `HDR-001`: Encabezado requerido faltante en la solicitud\n  - `HDR-002`: Valor del encabezado demasiado corto\n  - `HDR-003`: Valor del encabezado excede la longitud máxima\n  - `HDR-004`: Formato del encabezado inválido\n\n**Códigos de Error Posibles:**\n\n**TYP-003** - request_body_validation_error (HTTP 400/409)\n  - `RBV-001`: Campo requerido faltante en el cuerpo de la solicitud\n  - `RBV-002`: Campo enviado con valor vacío\n  - `RBV-003`: Longitud del campo por debajo del mínimo requerido\n  - `RBV-004`: Longitud del campo excede el máximo permitido\n  - `RBV-005`: Valor duplicado detectado (violación de restricción única)\n",
+          "content_types": [
+            "application/json"
+          ],
+          "schema": {
+            "name": "Response400",
+            "type": null,
+            "description": null,
+            "required": [],
+            "properties": [],
+            "example": null,
+            "all_of": null,
+            "one_of": null,
+            "any_of": null
+          },
+          "headers": [],
+          "example": null
+        }
+      ],
+      "security": []
+    }
+  ],
+  "schemas": [
+    {
+      "name": "ErrorResponse",
+      "type": "object",
+      "description": null,
+      "required": [],
+      "properties": [
+        {
+          "name": "errors",
+          "type": "object",
+          "format": null,
+          "required": false,
+          "description": null,
+          "enum": null,
+          "pattern": null,
+          "min_length": null,
+          "max_length": null,
+          "minimum": null,
+          "maximum": null,
+          "nullable": false,
+          "example": null
+        }
+      ],
+      "example": null,
+      "all_of": null,
+      "one_of": null,
+      "any_of": null
+    },
+    {
+      "name": "PriorityDTO",
+      "type": "object",
+      "description": "DTO de Prioridad",
+      "required": [
+        "description",
+        "name"
+      ],
+      "properties": [
+        {
+          "name": "idPriority",
+          "type": "integer",
+          "format": "int32",
+          "required": false,
+          "description": "Identificador único",
+          "enum": null,
+          "pattern": null,
+          "min_length": null,
+          "max_length": null,
+          "minimum": null,
+          "maximum": null,
+          "nullable": false,
+          "example": 1
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "format": null,
+          "required": true,
+          "description": "Nombre de la prioridad (único)",
+          "enum": null,
+          "pattern": null,
+          "min_length": 3,
+          "max_length": 70,
+          "minimum": null,
+          "maximum": null,
+          "nullable": false,
+          "example": "Alta"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "format": null,
+          "required": true,
+          "description": "Descripción de la prioridad",
+          "enum": null,
+          "pattern": null,
+          "min_length": 3,
+          "max_length": 70,
+          "minimum": null,
+          "maximum": null,
+          "nullable": false,
+          "example": "Tareas de alta prioridad"
+        }
+      ],
+      "example": null,
+      "all_of": null,
+      "one_of": null,
+      "any_of": null
+    }
+  ],
+  "security_schemes": {}
+}
